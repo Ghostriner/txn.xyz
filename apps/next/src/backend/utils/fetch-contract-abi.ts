@@ -1,4 +1,5 @@
-import type { Abi } from "viem";
+import type { Abi } from 'viem';
+import * as z from '@zod/mini';
 
 type Params = {
   contractAddress: string;
@@ -6,25 +7,32 @@ type Params = {
 };
 const chainData: Record<number, { apiRoot: string; apiKey: string }> = {
   1: {
-    apiRoot: 'https://api.etherscan.io/api', // Ethereum mainnet
-    // TODO: Replace this with definitive env checking
-    apiKey: process.env.ETHERSCAN_API_KEY as string,
+    apiRoot: 'https://api.etherscan.io/api',
+    apiKey: z.string().parse(process.env.ETHERSCAN_API_KEY),
   },
   10: {
     apiRoot: 'https://api-optimistic.etherscan.io/api',
-    apiKey: process.env.OPTIMISTIC_ETHERSCAN_API_KEY as string,
+    apiKey: z.string().parse(process.env.OPTIMISTIC_ETHERSCAN_API_KEY),
   },
   56: {
     apiRoot: 'https://api.bscscan.com/api',
-    apiKey: process.env.BSCSCAN_API_KEY as string,
+    apiKey: z.string().parse(process.env.BSCSCAN_API_KEY),
   },
   100: {
     apiRoot: 'https://api.gnosisscan.io/api',
-    apiKey: process.env.GNOSISSCAN_API_KEY as string,
+    apiKey: z.string().parse(process.env.GNOSISSCAN_API_KEY),
   },
   137: {
-    apiRoot: 'https://api.polygonscan.com/api', // Polygon
-    apiKey: process.env.POLYGONSCAN_API_KEY as string,
+    apiRoot: 'https://api.polygonscan.com/api',
+    apiKey: z.string().parse(process.env.POLYGONSCAN_API_KEY),
+  },
+  42161: {
+    apiRoot: 'https://api.arbiscan.io/api',
+    apiKey: z.string().parse(process.env.ARBISCAN_API_KEY),
+  },
+  8453: {
+    apiRoot: 'https://api.basescan.org/api',
+    apiKey: z.string().parse(process.env.BASESCAN_API_KEY),
   },
 };
 
@@ -39,6 +47,7 @@ export const fetchContractABI = async ({
   )
     .then((res) => res.json())
     .then((data: EtherscanResponse) => {
+      // TODO: Make this a zod validation instead of a type cast
       return JSON.parse(data.result) as Abi;
     });
   return abi;

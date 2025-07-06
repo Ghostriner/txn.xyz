@@ -11,6 +11,7 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { EncodeURIComponent } from '../../../../packages/txn-dot-xyz/utils/url-encoding/url-encoding';
 import { Input } from '../../src/frontend/components/Input';
+
 import styles from '../../styles/Home.module.css';
 
 type ABILeaf = {
@@ -88,9 +89,10 @@ const chainOptions = [
   ethereumOption,
   { value: 137, label: 'Polygon' },
   { value: 10, label: 'Optimism' },
-  // { value: 42161, label: 'Arbitrum One' },
+  { value: 42161, label: 'Arbitrum One' },
   { value: 100, label: 'Gnosis Chain' },
   { value: 56, label: 'Binance Smart Chain' },
+  { value: 8453, label: 'Base' },
 ];
 
 // @ts-ignore
@@ -104,7 +106,9 @@ const ContractInputs: React.FunctionComponent<{
 
   const abiLeaf = contractABI.find((leaf) => leaf.name === fn);
   if (!abiLeaf) {
-    return <>Function not found on contract</>;
+    return (
+      <p style={{ color: 'red' }}>Function "{fn}" not found on contract</p>
+    );
   }
   return (abiLeaf.inputs || []).map((input: any) => {
     const { name, type } = input;
